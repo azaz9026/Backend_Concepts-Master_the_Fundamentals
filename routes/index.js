@@ -13,16 +13,23 @@ router.get('/', function(req, res) {
 
 router.get('/create', async function(req, res) {
  let userData = await userModel.create({
-  username : 'harshit',
-  username : 'harshit@java',
-  description : 'I am a guy of 25 and I love so much java',
+  username : 'lux',
+  nickname : 'lux@python',
+  description : 'I am a guy of 22 and I love so much python',
   categories : {
-    type : ['Java' , 'C++'],
+    type : ['python' , 'Express'],
     default : []
   }
  })
  res.send(userData)
 });
+
+
+router.get('/find' , async (req , res)=>{
+  let regex = new RegExp("^lux$" , 'i')
+  let user = await userModel.find({username : regex})
+  res.send(user)
+})
 
 /**
  * 
