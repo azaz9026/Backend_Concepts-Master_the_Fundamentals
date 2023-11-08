@@ -14,33 +14,52 @@ router.get('/' , (req , res)=>{
 })
 
 
-router.get('/profile' , (req , res)=>{
+router.get('/profile', isLoggedIn , (req , res)=>{
   res.render('welcome to profile')
 })
 
+/** register page */
 
 router.post('/register', function(req, res) {
-  let userdata = new userModel({
+  var userdata = new userModel({
     username : String,
     secret : String,
   })
 
   userModel.register(userdata , req.body.password)
   .then(function(registereduser){
-    passport.authenticate("local")(req ,res , function(){
+    passport.authenticate('local'), (req ,res , function(){
       res.redirect('/profile')
     })
   })
 });
 
+
 /** login page */
 
 router.post('/login' , passport.authenticate('local' , {
-  successRedirect: "/profile",
+  successRedirect: '/profile',
   failureRedirect: '/'
-}) ,  (req , res)=>{
-  res.render('welcome to profile')
+}) ,  (req , res)=>{ })
+
+
+router.get('/logout' , (req , res)=>{ 
+  req.logout(function(err){
+    if(err) return next(err);
+    res.redirect('/')
+  })
 })
+
+
+function isLoggedIn(req , res , next){
+  if(req.isAuthenticated()){
+    return next()
+  }
+  res.redirect('/')
+}
+
+
+
 
 /* GET Create page. */
 /* 

@@ -1,4 +1,5 @@
 const mongoose  = require('mongoose')
+const pls = require('passport-local-mongoose')
 
 
 mongoose.connect('mongodb://127.0.0.1:27017/Endgame2')
@@ -8,17 +9,10 @@ mongoose.connect('mongodb://127.0.0.1:27017/Endgame2')
 
 const userSchema = mongoose.Schema({
   username : String,
-  nickname : String,
-  description : String,
-  categories : {
-    type : Array,
-    default : []
-  },
-  datecreated : {
-    type : Date,
-    default : Date.now()
-  }
-
+  password : String,
+  secret : String,
 })
+
+userSchema.plugin(pls)
 
 module.exports = mongoose.model('user' , userSchema)
