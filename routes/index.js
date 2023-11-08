@@ -1,16 +1,49 @@
 var express = require('express');
 var router = express.Router();
 const userModel = require('./users')
+const passport = require('passport')
+const localStrategy = require('passport-local')
+
+passport.use(new localStrategy(userModel.authenticate()))
 
 
 /* GET Home page. */
 
-router.get('/', function(req, res) {
-  res.render('index');
+router.get('/' , (req , res)=>{
+  res.render('index')
+})
+
+
+router.get('/profile' , (req , res)=>{
+  res.render('welcome to profile')
+})
+
+
+router.post('/register', function(req, res) {
+  let userdata = new userModel({
+    username : String,
+    secret : String,
+  })
+
+  userModel.register(userdata , req.body.password)
+  .then(function(registereduser){
+    passport.authenticate("local")(req ,res , function(){
+      res.redirect('/profile')
+    })
+  })
 });
 
-/* GET Create page. */
+/** login page */
 
+router.post('/login' , passport.authenticate('local' , {
+  successRedirect: "/profile",
+  failureRedirect: '/'
+}) ,  (req , res)=>{
+  res.render('welcome to profile')
+})
+
+/* GET Create page. */
+/* 
 router.get('/create', async function(req, res) {
  let userData = await userModel.create({
   username : 'lux',
