@@ -13,43 +13,48 @@ router.get('/' , (req , res)=>{
   res.render('index')
 })
 
+/** Profile router */
 
 router.get('/profile', isLoggedIn , (req , res)=>{
-  res.render('welcome to profile')
+  res.send('welcome to profile')
 })
 
 /** register page */
 
 router.post('/register', function(req, res) {
   var userdata = new userModel({
-    username : String,
-    secret : String,
+    username : req.body.username,
+    secret : req.body.secret
   })
 
   userModel.register(userdata , req.body.password)
   .then(function(registereduser){
     passport.authenticate('local'), (req ,res , function(){
-      res.redirect('/profile')
+      res.redirect("/profile")
     })
   })
-});
 
+})
 
+  
 /** login page */
 
 router.post('/login' , passport.authenticate('local' , {
   successRedirect: '/profile',
   failureRedirect: '/'
-}) ,  (req , res)=>{ })
+}) , function(req , res){})
 
 
-router.get('/logout' , (req , res)=>{ 
+/** logout page */
+
+router.get('/logout' , function(req , res , next){ 
   req.logout(function(err){
     if(err) return next(err);
-    res.redirect('/')
+    res.redirect('/');
   })
 })
 
+/** isLoggedIn  */
 
 function isLoggedIn(req , res , next){
   if(req.isAuthenticated()){
@@ -59,7 +64,7 @@ function isLoggedIn(req , res , next){
 }
 
 
-
+module.exports = router;
 
 /* GET Create page. */
 /* 
@@ -98,4 +103,4 @@ router.get('/checkkaro', function(req, res) {
 
 */
 
-module.exports = router;
+
